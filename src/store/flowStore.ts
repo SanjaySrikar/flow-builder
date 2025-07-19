@@ -45,7 +45,7 @@ export const useFlowStore = create<FlowStore>((set, get) => ({
       id: `${type}-${nodeIdCounter++}`,
       type,
       position,
-      data: { text: 'Enter your message here...' },
+      data: { text: 'Enter your message here...', channel: 'whatsapp' },
     };
     
     set((state) => ({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFlowStore } from '../../store/flowStore';
+import { WhatsAppIcon, InstagramIcon, SMSIcon } from '../icons/ChannelIcons';
 
 interface SettingsPanelProps {
   isVisible: boolean;
@@ -8,6 +9,7 @@ interface SettingsPanelProps {
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isVisible }) => {
   const { nodes, selectedNodeId, updateNodeData, setSelectedNode } = useFlowStore();
   const [messageText, setMessageText] = useState('');
+  const [selectedChannel, setSelectedChannel] = useState<'whatsapp' | 'instagram' | 'sms' | ''>('');
 
 
   const selectedNode = nodes.find(node => node.id === selectedNodeId);
@@ -21,6 +23,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isVisible }) => {
       } else {
         setMessageText(nodeText);
       }
+      setSelectedChannel(selectedNode.data?.channel || 'whatsapp');
     }
   }, [selectedNode]);
 
@@ -31,6 +34,18 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isVisible }) => {
     
     if (selectedNodeId) {
       updateNodeData(selectedNodeId, { text: newText });
+    }
+  };
+
+  const handleChannelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newChannel = event.target.value as 'whatsapp' | 'instagram' | 'sms' | '';
+    setSelectedChannel(newChannel);
+    
+    if (selectedNodeId) {
+      updateNodeData(selectedNodeId, { 
+        text: messageText,
+        channel: newChannel || undefined 
+      });
     }
   };
 
@@ -60,6 +75,24 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isVisible }) => {
       </div>
       
       <div className="flex-1 p-5 overflow-y-auto">
+        <div className="mb-6">
+          <label htmlFor="channel-select" className="block text-sm font-medium text-slate-700 mb-2">
+            Channel
+          </label>
+          <select
+            id="channel-select"
+            className="w-full p-3 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 transition-all duration-200"
+            value={selectedChannel}
+            onChange={handleChannelChange}
+          > 
+          {/* Can be extended to more channels in the future */}
+            <option value="">Select a channel</option>
+            <option value="whatsapp">📱 WhatsApp</option>
+            <option value="instagram">📷 Instagram</option>
+            <option value="sms">💬 SMS</option>
+          </select>
+        </div>
+
         <div className="mb-6">
           <label htmlFor="message-text" className="block text-sm font-medium text-slate-700 mb-2">
             Text
