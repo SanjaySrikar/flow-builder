@@ -24,7 +24,6 @@ function FlowBuilder() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { project } = useReactFlow();
   
-  // Pull in all the store methods we need - this gives us a single source of truth
   const {
     nodes,
     edges,
